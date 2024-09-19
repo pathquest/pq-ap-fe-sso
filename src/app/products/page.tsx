@@ -12,12 +12,12 @@ export default async function ProductsPage() {
   const token = session?.user?.access_token
 
   if(isMapped) {
-    return redirect(`${apUrl}/verify-token?token=${token}`)
+    return redirect(`${apUrl}/verify-token?token=${token}&isFirstConfig=false`)
   }
 
 
   if (!session) {
-    return redirect(`${apUrl}/verify-token?token=${token}`)
+    return redirect(`${apUrl}/verify-token?token=${token}&isFirstConfig=false`)
   }
 
   return <ProductList session={session}/>

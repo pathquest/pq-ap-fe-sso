@@ -121,7 +121,7 @@ const AddOrganization: React.FC = () => {
 
         if (response.ResponseStatus === 'Success') {
           setIsLoading(false)
-          router.push(`${apUrl}/verify-token?token=${token}`)
+          router.push(`${apUrl}/verify-token?token=${token}&isFirstConfig=true`)
         } else {
           setIsLoading(false)
           const data = response.Message
