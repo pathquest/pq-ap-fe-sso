@@ -38,10 +38,10 @@ const signUpContent = {
 }
 
 const verificationContent = {
-  description: 'Please enter the One Time Password to verify your account',
-  sendInfo: 'A One Time Password has been sent to',
+  description: 'Account Verification',
+  sendInfo: 'Please enter an OTP sent to you on',
   verifyBtn: 'VERIFY',
-  linkText: 'If code not received, click on',
+  linkText: `Haven't received the OTP yet? Click here to get one.`,
   resendBtn: 'Resend OTP',
   resendOtpMessage: 'We have resend the OTP to your registered email address',
 }
