@@ -41,8 +41,8 @@ const verificationContent = {
   description: 'Account Verification',
   sendInfo: 'Please enter an OTP sent to you on',
   verifyBtn: 'VERIFY',
-  linkText: `Haven't received the OTP yet? Click here to get one.`,
-  resendBtn: 'Resend OTP',
+  resendBtn: 'Click here',
+  linkText: `Haven't received the OTP yet?`,
   resendOtpMessage: 'We have resend the OTP to your registered email address',
 }
 
