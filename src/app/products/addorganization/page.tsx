@@ -170,8 +170,9 @@ const AddOrganization: React.FC = () => {
 
           <div className='flex w-full min-h-[80vh] flex-col items-center justify-start pt-[3%]'>
             <div className='w-[356px] items-center justify-center'>
-              <span className=' pb-[15px] flex items-start text-[16px] font-bold text-[#333333] sm:mx-auto'>
-                I'm with a
+              <span className='tracking-[0.02em] font-proxima pb-[15px] flex items-start text-[16px] font-bold text-[#333333] sm:mx-auto'>
+                {/* I'm with a */}
+                Organization Details
               </span>
 
               <form

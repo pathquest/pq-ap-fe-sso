@@ -5,11 +5,7 @@ import APIcon from '@/assets/Icons/Product Icons/APIcon'
 import BiIcon from '@/assets/Icons/Product Icons/BIIcon'
 import NavBar from '@/components/Navbar'
 import { useRouter } from 'next/navigation'
-import {
-  Button,
-  Loader,
-  Typography,
-} from 'pq-ap-lib'
+import { Button, Loader, Typography } from 'pq-ap-lib'
 import React, { useEffect, useState } from 'react'
 
 interface ProfileData {
@@ -21,7 +17,7 @@ interface Product {
   [x: string]: unknown
   name: string
 }
-const ProductList = ({session}:any) => {
+const ProductList = ({ session }: any) => {
   const router = useRouter()
   const token = session?.user?.access_token
 
@@ -41,11 +37,13 @@ const ProductList = ({session}:any) => {
       const response = await agent.APIs.getProducts()
       if (response.ResponseStatus === 'Success') {
         const data = response.ResponseData
-        setProductData(data.sort((a: any, b: any) => {
-          if (a.id < b.id) return 1;
-          if (a.id > b.id) return -1;
-          return 0;
-        }))
+        const result = data.filter((item: any) => item.name == "PathQuest AP");
+        setProductData(result)
+        // setProductData(data.sort((a: any, b: any) => {
+        //   if (a.id < b.id) return 1;
+        //   if (a.id > b.id) return -1;
+        //   return 0;
+        // }))
         setClicked(false)
       }
     } catch (error) {
@@ -87,11 +85,11 @@ const ProductList = ({session}:any) => {
       <div
         className={`h-[262px] px-[60px] w-auto rounded-lg border ${selectedProduct === product.name ? 'border-primary shadow-lg' : 'border-lightSilver'
           } group hover:border-primary hover:shadow-lg`}
-        key={product.Id}
+        key={Math.random()}
       >
         <div className='flex flex-col h-[65px] w-auto justify-center items-center mt-14'>
           <div>
-            {product.name === 'PathQuest BI' && <BiIcon bgColor={'#F4F4F4'} />}
+            {/* {product.name === 'PathQuest BI' && <BiIcon bgColor={'#F4F4F4'} />} */}
             {product.name === 'PathQuest AP' && <APIcon bgColor={'#F4F4F4'} />}
           </div>
           <div className='pt-5'>

@@ -226,14 +226,14 @@ export default function VerificationForm() {
             {verificationContent?.linkText}
           </Typography>
 
-          <div className='flex'>
+          <div className='flex text-sm text-slatyGrey'>
             <span
-              className={`ml-2 text-sm font-semibold underline ${remainingTime > 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer text-primary'
+              className={`ml-2 text-sm font-semibold underline ${remainingTime > 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer text-slatyGrey'
                 }`}
               onClick={handleResendOTP}
             >
               {verificationContent?.resendBtn}
-            </span>
+            </span>  &nbsp; to get one.
           </div>
         </div>
         <span className='w-50 flex flex-col justify-items-center'>
