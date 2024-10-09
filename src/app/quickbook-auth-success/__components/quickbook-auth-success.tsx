@@ -12,6 +12,7 @@ const QuickbookAuthSuccess = ({ session }: any) => {
   const router = useRouter()
   const { update } = useSession()
   const token = session?.user?.access_token
+  const refreshToken = session?.user?.refresh_token
 
   const searchParams = useSearchParams()
   const accessToken = searchParams.get('code')
@@ -74,7 +75,7 @@ const QuickbookAuthSuccess = ({ session }: any) => {
       const isMapped = response?.ResponseData.products.some((product: any) => product.is_mapped)
 
       if (isMapped) {
-        router.push(`${apUrl}/verify-token?token=${token}`)
+        router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
       } else {
         router.push(`${apUrl}/products`)
       }

@@ -10,14 +10,15 @@ export default async function ProductsPage() {
   const userProfile: any = await getUserProfile()
   const isMapped = userProfile.products.some((product: any) => product.is_mapped)
   const token = session?.user?.access_token
+  const refreshToken = session?.user?.refresh_token
 
   if(isMapped) {
-    return redirect(`${apUrl}/verify-token?token=${token}&isFirstConfig=false`)
+    return redirect(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}&isFirstConfig=false`)
   }
 
 
   if (!session) {
-    return redirect(`${apUrl}/verify-token?token=${token}&isFirstConfig=false`)
+    return redirect(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}&isFirstConfig=false`)
   }
 
   return <ProductList session={session}/>
