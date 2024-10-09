@@ -20,6 +20,7 @@ interface Product {
 const ProductList = ({ session }: any) => {
   const router = useRouter()
   const token = session?.user?.access_token
+  const refreshToken = session?.user?.refresh_token
 
   useEffect(() => {
     setClicked(true)
@@ -73,7 +74,7 @@ const ProductList = ({ session }: any) => {
 
       if (isMapped) {
         setClicked(false)
-        router.push(`${apUrl}/verify-token?token=${token}`)
+        router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
       }
     } else {
       setClicked(false)

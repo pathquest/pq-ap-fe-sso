@@ -28,6 +28,8 @@ const AddOrganization: React.FC = () => {
   const router = useRouter()
   const { data: session } = useSession()
   const token = session?.user?.access_token
+  const refreshToken = session?.user?.refresh_token
+
   useEffect(() => {
     setClicked(true)
     userConfig()
@@ -80,7 +82,7 @@ const AddOrganization: React.FC = () => {
 
       if (isMapped) {
         setClicked(false)
-        router.push(`${apUrl}/verify-token?token=${token}`)
+        router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
       }
     } else {
       setClicked(false)
@@ -121,7 +123,7 @@ const AddOrganization: React.FC = () => {
 
         if (response.ResponseStatus === 'Success') {
           setIsLoading(false)
-          router.push(`${apUrl}/verify-token?token=${token}&isFirstConfig=true`)
+          router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}&isFirstConfig=true`)
         } else {
           setIsLoading(false)
           const data = response.Message
