@@ -23,6 +23,7 @@ const ContactReseller: React.FC = () => {
     const router = useRouter()
     const { data: session } = useSession()
     const token = session?.user?.access_token
+    const refreshToken = session?.user?.refresh_token
 
     useEffect(() => {
         setClicked(true)
@@ -53,7 +54,7 @@ const ContactReseller: React.FC = () => {
 
             if (isMapped) {
                 setClicked(false)
-                router.push(`${apUrl}/verify-token?token=${token}`)
+                router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
             }
         } else {
             setClicked(false)
