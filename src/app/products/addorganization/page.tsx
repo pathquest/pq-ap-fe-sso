@@ -26,9 +26,9 @@ interface Product {
 }
 const AddOrganization: React.FC = () => {
   const router = useRouter()
-  const { data: session } = useSession()
+  const { data: session }:any = useSession()
   const token = session?.user?.access_token
-  const refreshToken = session?.user?.refresh_token
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
 
   useEffect(() => {
     setClicked(true)
