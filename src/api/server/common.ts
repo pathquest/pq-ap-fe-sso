@@ -12,3 +12,4 @@ export async function getUserProfile() {
 }
 
 export const apUrl = process.env.SSO_SUCCESS_REDIRECT_URI
+

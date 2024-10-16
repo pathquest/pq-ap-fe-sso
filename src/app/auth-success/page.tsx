@@ -7,9 +7,9 @@ import { apUrl } from '@/api/server/common'
 import { encryptToken } from '@/utils/auth'
 
 export default async function AuthSuccessPage() {
-  const session = await auth()
+  const session:any = await auth()
   const token = session?.user?.access_token
-  const refreshToken = session?.user?.refresh_token
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
 
   if (session) {
     const encodedToken = encryptToken(encryptToken(token))

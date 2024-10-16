@@ -7,13 +7,13 @@ import { apUrl, getUserProfile } from '@/api/server/common'
 import { encryptToken } from '@/utils/auth'
 
 export default async function ProductsPage() {
-  const session = await auth()
+  const session:any = await auth()
   const userProfile: any = await getUserProfile()
   const isMapped = userProfile.products.some((product: any) => product.is_mapped)
   const isBI = userProfile.products.some((product: any) => product.is_default && product.is_active && product.id === 1)
   const isAP = userProfile.products.some((product: any) => product.is_default && product.is_active && product.id === 2)
   const token = session?.user?.access_token
-  const refreshToken = session?.user?.refresh_token
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
 
   if(isBI) {
     if(isMapped) {

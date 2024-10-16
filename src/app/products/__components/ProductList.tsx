@@ -21,7 +21,7 @@ interface Product {
 const ProductList = ({ session }: any) => {
   const router = useRouter()
   const token = session?.user?.access_token
-  const refreshToken = session?.user?.refresh_token
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
 
   useEffect(() => {
     setClicked(true)

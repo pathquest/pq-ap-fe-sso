@@ -13,12 +13,11 @@ const QuickbookAuthSuccess = ({ session }: any) => {
   const router = useRouter()
   const { update } = useSession()
   const token = session?.user?.access_token
-  const refreshToken = session?.user?.refresh_token
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
+  const [loader, setLoader] = useState(true)
 
   const searchParams = useSearchParams()
   const accessToken = searchParams.get('code')
-
-  const [loader, setLoader] = useState(true)
 
   useEffect(() => {
     const sendToken = async () => {
