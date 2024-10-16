@@ -6,11 +6,11 @@ import { auth } from '@/auth'
 import { apUrl, getUserProfile } from '@/api/server/common'
 
 export default async function ProductsPage() {
-  const session = await auth()
+  const session:any = await auth()
   const userProfile: any = await getUserProfile()
   const isMapped = userProfile.products.some((product: any) => product.is_mapped)
   const token = session?.user?.access_token
-  const refreshToken = session?.user?.refresh_token
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
 
   if(isMapped) {
     return redirect(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}&isFirstConfig=false`)
