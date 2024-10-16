@@ -11,6 +11,5 @@ export async function getUserProfile() {
   return handleResponse(response)
 }
 
-// export const apUrl = process.env.SSO_SUCCESS_REDIRECT_URI
-export const apUrl = 'http://localhost:3001'
+export const apUrl = process.env.SSO_SUCCESS_REDIRECT_URI
 
