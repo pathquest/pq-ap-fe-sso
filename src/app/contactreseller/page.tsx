@@ -9,6 +9,7 @@ import Call from '@/assets/Icons/profile/Call'
 import Mail from '@/assets/Icons/profile/Mail'
 import { useSession } from 'next-auth/react'
 import { apUrl } from '@/api/server/common'
+import { encryptToken } from '@/utils/auth'
 
 interface ProfileData {
     id: number
@@ -54,7 +55,8 @@ const ContactReseller: React.FC = () => {
 
             if (isMapped) {
                 setClicked(false)
-                router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
+                const encodedToken = encryptToken(encryptToken(token))
+                router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
             }
         } else {
             setClicked(false)

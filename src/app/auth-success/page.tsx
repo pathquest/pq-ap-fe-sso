@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 import AuthSuccess from './__components/auth-success'
 import { redirect, useRouter } from 'next/navigation'
 import { apUrl } from '@/api/server/common'
+import { encryptToken } from '@/utils/auth'
 
 export default async function AuthSuccessPage() {
   const session = await auth()
@@ -11,7 +12,8 @@ export default async function AuthSuccessPage() {
   const refreshToken = session?.user?.refresh_token
 
   if (session) {
-    return redirect(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
+    const encodedToken = encryptToken(encryptToken(token))
+    return redirect(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
   }
 
   return <AuthSuccess session={session} />

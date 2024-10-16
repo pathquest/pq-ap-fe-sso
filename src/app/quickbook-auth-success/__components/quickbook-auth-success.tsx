@@ -2,6 +2,7 @@
 
 import agent, { invalidateSessionCache } from '@/api/axios'
 import { apUrl } from '@/api/server/common'
+import { encryptToken } from '@/utils/auth'
 import { useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Loader, Toast } from 'pq-ap-lib'
@@ -75,7 +76,8 @@ const QuickbookAuthSuccess = ({ session }: any) => {
       const isMapped = response?.ResponseData.products.some((product: any) => product.is_mapped)
 
       if (isMapped) {
-        router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
+        const encodedToken = encryptToken(encryptToken(token))
+        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
       } else {
         router.push(`${apUrl}/products`)
       }
