@@ -4,6 +4,7 @@ import { apUrl } from '@/api/server/common'
 import APIcon from '@/assets/Icons/Product Icons/APIcon'
 import BiIcon from '@/assets/Icons/Product Icons/BIIcon'
 import NavBar from '@/components/Navbar'
+import { encryptToken } from '@/utils/auth'
 import { useRouter } from 'next/navigation'
 import { Button, Loader, Typography } from 'pq-ap-lib'
 import React, { useEffect, useState } from 'react'
@@ -38,7 +39,7 @@ const ProductList = ({ session }: any) => {
       const response = await agent.APIs.getProducts()
       if (response.ResponseStatus === 'Success') {
         const data = response.ResponseData
-        const result = data.filter((item: any) => item.name == "PathQuest AP");
+        const result = data.filter((item: any) => item.id != 3);
         setProductData(result)
         // setProductData(data.sort((a: any, b: any) => {
         //   if (a.id < b.id) return 1;
@@ -74,7 +75,8 @@ const ProductList = ({ session }: any) => {
 
       if (isMapped) {
         setClicked(false)
-        router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
+        const encodedToken = encryptToken(encryptToken(token))
+        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
       }
     } else {
       setClicked(false)
@@ -90,8 +92,8 @@ const ProductList = ({ session }: any) => {
       >
         <div className='flex flex-col h-[65px] w-auto justify-center items-center mt-14'>
           <div>
-            {/* {product.name === 'PathQuest BI' && <BiIcon bgColor={'#F4F4F4'} />} */}
-            {product.name === 'PathQuest AP' && <APIcon bgColor={'#F4F4F4'} />}
+            {product.id === 1 && <BiIcon bgColor={'#F4F4F4'} />}
+            {product.id === 2 && <APIcon bgColor={'#F4F4F4'} />}
           </div>
           <div className='pt-5'>
             <Typography className='inline-block text-center font-medium text-[18px]'>
@@ -113,7 +115,7 @@ const ProductList = ({ session }: any) => {
 
   const handleRadioChange = async (productName: string, productId: string) => {
     setSelectedProduct(productName)
-    productName === 'PathQuest AP' && router.push('/products/addorganization')
+    router.push(`/products/addorganization?productId=${productId}`)
   }
 
   const globalData = (data: any) => {

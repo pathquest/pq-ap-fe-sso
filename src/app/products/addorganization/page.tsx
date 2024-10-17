@@ -4,8 +4,9 @@ import { apUrl } from '@/api/server/common'
 import BackIcon from '@/assets/Icons/billposting/accountpayable/BackIcon'
 import NavBar from '@/components/Navbar'
 import { IndustryTypeData } from '@/data/reseller'
+import { encryptToken } from '@/utils/auth'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   Button,
   Loader,
@@ -26,9 +27,14 @@ interface Product {
 }
 const AddOrganization: React.FC = () => {
   const router = useRouter()
-  const { data: session }:any = useSession()
+
+  const { data: session } = useSession()
+  const searchParams = useSearchParams()
+
+  const productId = searchParams.get('productId')
+
   const token = session?.user?.access_token
-  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
+  const refreshToken = encodeURIComponent(session?.user?.refresh_token ?? '')
 
   useEffect(() => {
     setClicked(true)
@@ -82,7 +88,8 @@ const AddOrganization: React.FC = () => {
 
       if (isMapped) {
         setClicked(false)
-        router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}`)
+        const encodedToken = encryptToken(encryptToken(token))
+        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
       }
     } else {
       setClicked(false)
@@ -116,14 +123,23 @@ const AddOrganization: React.FC = () => {
         const response = await agent.APIs.organizationSave({
           id: 0,
           name: orgName,
-          productId: orgTypeId,
+          productId: productId,
           industryType: optionId,
           parentOrgId: null,
         })
 
         if (response.ResponseStatus === 'Success') {
           setIsLoading(false)
-          router.push(`${apUrl}/verify-token?token=${token}&refreshToken=${refreshToken}&isFirstConfig=true`)
+          if (productId === '2') {
+            const encodedToken = encryptToken(encryptToken(token))
+            router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}&isFirstConfig=true`)
+          }
+          if (productId === '1') {
+            const objToken = { "token": `Bearer ${token}` }
+            const encodedToken = encryptToken(encryptToken(JSON.stringify(objToken)))
+            router.push(`https://stagingbi.pacificabs.com/manage-company?auth=${encodeURIComponent(encodedToken)}`)
+          }
+
         } else {
           setIsLoading(false)
           const data = response.Message
