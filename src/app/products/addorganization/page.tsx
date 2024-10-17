@@ -130,8 +130,16 @@ const AddOrganization: React.FC = () => {
 
         if (response.ResponseStatus === 'Success') {
           setIsLoading(false)
-          const encodedToken = encryptToken(encryptToken(token))
-          router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}&isFirstConfig=true`)
+          if (productId === '2') {
+            const encodedToken = encryptToken(encryptToken(token))
+            router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}&isFirstConfig=true`)
+          }
+          if (productId === '1') {
+            const objToken = { "token": `Bearer ${token}` }
+            const encodedToken = encryptToken(encryptToken(JSON.stringify(objToken)))
+            router.push(`https://stagingbi.pacificabs.com/manage-company?auth=${encodeURIComponent(encodedToken)}`)
+          }
+
         } else {
           setIsLoading(false)
           const data = response.Message
