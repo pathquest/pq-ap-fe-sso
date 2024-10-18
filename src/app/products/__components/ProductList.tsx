@@ -1,11 +1,11 @@
 'use client'
 import agent from '@/api/axios'
-import { apUrl } from '@/api/server/common'
+import { apUrl, biUrl } from '@/api/server/common'
 import APIcon from '@/assets/Icons/Product Icons/APIcon'
 import BiIcon from '@/assets/Icons/Product Icons/BIIcon'
 import NavBar from '@/components/Navbar'
 import { encryptToken } from '@/utils/auth'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button, Loader, Typography } from 'pq-ap-lib'
 import React, { useEffect, useState } from 'react'
 
@@ -22,6 +22,8 @@ const ProductList = ({ session }: any) => {
   const router = useRouter()
   const token = session?.user?.access_token
   const refreshToken = encodeURIComponent(session?.user?.refresh_token)
+  const searchParams = useSearchParams()
+  const products = searchParams.get('products') ?? ''
 
   useEffect(() => {
     setClicked(true)
@@ -72,11 +74,44 @@ const ProductList = ({ session }: any) => {
   useEffect(() => {
     if (profileData) {
       const isMapped = profileData.products.some((product) => product.is_mapped)
+      const isBI = profileData.products.some((product: any) => product.is_default && product.is_active && product.id === 1)
+      const isAP = profileData.products.some((product: any) => product.is_default && product.is_active && product.id === 2)
 
-      if (isMapped) {
-        setClicked(false)
+      const BIMapped = () => {
+        const objToken = { "token": `Bearer ${token}` }
+        const encodedToken = encryptToken(encryptToken(JSON.stringify(objToken)))
+        router.push(`${biUrl}/manage-company?auth=${encodeURIComponent(encodedToken)}`)
+      }
+
+      const APMapped = () => {
         const encodedToken = encryptToken(encryptToken(token))
-        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
+        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}&isFirstConfig=false`)
+      }
+
+      if (products) {
+        if (isBI && products === 'BI') {
+          if (isMapped) {
+            return BIMapped()
+          }
+        }
+
+        if (isAP && products === 'AP') {
+          if (isMapped) {
+            return APMapped()
+          }
+        }
+      } else {
+        if (isBI) {
+          if (isMapped) {
+            return BIMapped()
+          }
+        }
+
+        if (isAP) {
+          if (isMapped) {
+            return APMapped()
+          }
+        }
       }
     } else {
       setClicked(false)
@@ -87,7 +122,9 @@ const ProductList = ({ session }: any) => {
     return (
       <div
         className={`h-[262px] px-[60px] w-auto rounded-lg border ${selectedProduct === product.name ? 'border-primary shadow-lg' : 'border-lightSilver'
-          } group hover:border-primary hover:shadow-lg`}
+          } group hover:border-primary hover:shadow-lg
+          ${product.is_mapped && product.is_active ? 'bg-[#F6F6F6]' : 'bg-white'}
+          `}
         key={Math.random()}
       >
         <div className='flex flex-col h-[65px] w-auto justify-center items-center mt-14'>
@@ -106,7 +143,7 @@ const ProductList = ({ session }: any) => {
             className={`btn-sm mx-1.5 my-3 !h-9 !w-[214px] uppercase rounded-full font-semibold tracking-wider`}
             variant={`btn-outline-primary`}
             onClick={() => handleRadioChange(product.name, product.id)}>
-            Subscribe Now
+            {product.is_mapped && product.is_active ? 'Subcribed' : 'Subcribe Now'}
           </Button>
         </div>
       </div>
@@ -115,7 +152,11 @@ const ProductList = ({ session }: any) => {
 
   const handleRadioChange = async (productName: string, productId: string) => {
     setSelectedProduct(productName)
-    router.push(`/products/addorganization?productId=${productId}`)
+    if (products) {
+      router.push(`/products/addorganization?productId=${productId}&products=${products}`)
+    } else {
+      router.push(`/products/addorganization?productId=${productId}`)
+    }
   }
 
   const globalData = (data: any) => {
