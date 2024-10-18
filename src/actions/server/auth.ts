@@ -36,3 +36,28 @@ export async function handleSignOut() {
     }
   })
 }
+
+export async function handleTokenSave(formFields: any) {
+  try {
+    await signIn('credentials', {
+      email: formFields.email,
+      password: '',
+      token: formFields.access_token,
+      expires_at:formFields.expires_at,
+      refresh_token:formFields.refresh_token,
+      redirect: false,
+    })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      if (error.type === 'CallbackRouteError') {
+        return { error: error?.cause?.err?.message }
+      } else if (error.type === 'CredentialsSignin') {
+        return { error: 'Invalid credentials!' }
+      } else {
+        return { error: 'Something went wrong!' }
+      }
+    }
+
+    throw error
+  }
+}
