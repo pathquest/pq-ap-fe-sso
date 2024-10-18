@@ -81,7 +81,7 @@ const QuickbookAuthSuccess = ({ session }: any) => {
         const encodedToken = encryptToken(encryptToken(token))
         router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
       } else {
-        router.push(`${apUrl}/products`)
+        router.push(`/products`)
       }
     }
   }
