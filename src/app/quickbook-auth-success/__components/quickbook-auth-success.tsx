@@ -1,5 +1,6 @@
 'use client'
 
+import { handleTokenSave } from '@/actions/server/auth'
 import agent, { invalidateSessionCache } from '@/api/axios'
 import { apUrl } from '@/api/server/common'
 import { encryptToken } from '@/utils/auth'
@@ -9,11 +10,11 @@ import { Loader, Toast } from 'pq-ap-lib'
 import { useEffect, useState } from 'react'
 
 const QuickbookAuthSuccess = ({ session }: any) => {
-  const user = session ? session?.user : {}
+  // const user = session ? session?.user : {}
   const router = useRouter()
-  const { update } = useSession()
-  const token = session?.user?.access_token
-  const refreshToken = encodeURIComponent(session?.user?.refresh_token)
+  // const { update } = useSession()
+  // const token = session?.user?.access_token
+  // const refreshToken = encodeURIComponent(session?.user?.refresh_token)
   const [loader, setLoader] = useState(true)
 
   const searchParams = useSearchParams()
@@ -28,19 +29,21 @@ const QuickbookAuthSuccess = ({ session }: any) => {
           if (response.ResponseStatus === 'Success') {
             setLoader(false)
             const data = response.Message
-            if (data === null) {
-              Toast.success('Success', 'You are successfully logged in.')
-            } else {
-              Toast.success('Success', data)
-            }
+            const ResponseData = response.ResponseData
 
-            const { Token, RefreshToken } = response.ResponseData
+            await handleTokenSave({
+              email: ResponseData.Username,
+              access_token: ResponseData.Token,
+              expires_at: ResponseData.TokenExpiry,
+              refresh_token: ResponseData.RefreshToken
+            })
 
             invalidateSessionCache();
-            await update({ ...user, access_token: Token, refresh_token: RefreshToken })
+            hasProduct(ResponseData.Token, ResponseData.RefreshToken)
 
-            //api call to check if product selected
-            hasProduct()
+            Toast.success('Success', 'You are successfully logged in.')
+
+
           } else {
             setLoader(false)
             const data = response.Message
@@ -68,7 +71,7 @@ const QuickbookAuthSuccess = ({ session }: any) => {
     }
   }, [accessToken])
 
-  const hasProduct = async () => {
+  const hasProduct = async (token: any, refreshToken: any) => {
     const response = await agent.APIs.getUserProfile()
 
     if (response?.ResponseStatus === 'Success') {
@@ -78,7 +81,7 @@ const QuickbookAuthSuccess = ({ session }: any) => {
         const encodedToken = encryptToken(encryptToken(token))
         router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
       } else {
-        router.push(`${apUrl}/products`)
+        router.push(`/products`)
       }
     }
   }
