@@ -13,13 +13,14 @@ const nextConfig = {
     AUTH_SECRET: process.env.AUTH_SECRET,
 
     STRAPI_URL: process.env.STRAPI_URL,
-    
+
     API_SSO: process.env.API_SSO,
     API_PROFILE: process.env.API_PROFILE,
     API_MANAGE: process.env.API_MANAGE,
     HOST_URL: process.env.HOST_URL,
 
-    SSO_SUCCESS_REDIRECT_URI: process.env.SSO_SUCCESS_REDIRECT_URI
+    SSO_SUCCESS_REDIRECT_URI: process.env.SSO_SUCCESS_REDIRECT_URI,
+    BI_REDIRECTURI: process.env.BI_REDIRECTURI
   },
   images: {
     domains: ['nextpqap.azurewebsites.net'],
