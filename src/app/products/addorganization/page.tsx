@@ -1,6 +1,6 @@
 'use client'
 import agent from '@/api/axios'
-import { apUrl } from '@/api/server/common'
+import { apUrl, biUrl } from '@/api/server/common'
 import BackIcon from '@/assets/Icons/billposting/accountpayable/BackIcon'
 import NavBar from '@/components/Navbar'
 import { IndustryTypeData } from '@/data/reseller'
@@ -32,6 +32,7 @@ const AddOrganization: React.FC = () => {
   const searchParams = useSearchParams()
 
   const productId = searchParams.get('productId')
+  const products = searchParams.get('products') ?? ''
 
   const token = session?.user?.access_token
   const refreshToken = encodeURIComponent(session?.user?.refresh_token ?? '')
@@ -85,11 +86,44 @@ const AddOrganization: React.FC = () => {
   useEffect(() => {
     if (profileData) {
       const isMapped = profileData.products.some((product) => product.is_mapped)
+      const isBI = profileData.products.some((product: any) => product.is_default && product.is_active && product.id === 1)
+      const isAP = profileData.products.some((product: any) => product.is_default && product.is_active && product.id === 2)
 
-      if (isMapped) {
-        setClicked(false)
+      const BIMapped = () => {
+        const objToken = { "token": `Bearer ${token}` }
+        const encodedToken = encryptToken(encryptToken(JSON.stringify(objToken)))
+        router.push(`${biUrl}/manage-company?auth=${encodeURIComponent(encodedToken)}`)
+      }
+    
+      const APMapped = () => {
         const encodedToken = encryptToken(encryptToken(token))
-        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}`)
+        router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}&isFirstConfig=false`)
+      }
+    
+      if (products) {
+        if (isBI && products === 'BI') {
+          if (isMapped) {
+           return BIMapped()
+          }
+        }
+    
+        if (isAP && products === 'AP') {
+          if (isMapped) {
+            return APMapped()
+          }
+        }
+      } else {
+        if (isBI) {
+          if (isMapped) {
+            return BIMapped()
+          }
+        }
+    
+        if (isAP) {
+          if (isMapped) {
+           return APMapped()
+          }
+        }
       }
     } else {
       setClicked(false)
@@ -134,10 +168,11 @@ const AddOrganization: React.FC = () => {
             const encodedToken = encryptToken(encryptToken(token))
             router.push(`${apUrl}/verify-token?token=${encodeURIComponent(encodedToken)}&refreshToken=${refreshToken}&isFirstConfig=true`)
           }
+
           if (productId === '1') {
             const objToken = { "token": `Bearer ${token}` }
             const encodedToken = encryptToken(encryptToken(JSON.stringify(objToken)))
-            router.push(`https://stagingbi.pacificabs.com/manage-company?auth=${encodeURIComponent(encodedToken)}`)
+            router.push(`${biUrl}/manage-company?auth=${encodeURIComponent(encodedToken)}`)
           }
 
         } else {
